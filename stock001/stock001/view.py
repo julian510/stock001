@@ -11,7 +11,7 @@ def dbtest(request):
     #return HttpResponse("Hello world ! ")
     test = user(nameid='000001', chiname='tuzhi', enname='julian', phnum='18918378702', passwd='111111')
     test.save()
-    return HttpResponse("添加数据成功！")
+    return HttpResponse("添加数据成功lsdjal！")
 
 def dblist(request):
     user_list = user.objects.all()

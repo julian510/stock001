@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block mainbody %}
+<div>
+    <label>It's test!</label>
+</div>
+<!image-- src="{% static images %}" width="400" height="500" --></image>
+<form enctype="multipart/form-data">
+{% csrf_token %}
+{{ form.as_p }}
+</form>
+
+{% endblock %}

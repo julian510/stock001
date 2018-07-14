@@ -1,0 +1,145 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block mainbody %}
+<form class="form-inline" method="get" action="/query/gotostock/">
+    <div class="form-group">
+        <label class="sr-only">stockname</label>
+        <p class="form-control-static">股票代码：</p>
+    </div>
+    <div class="form-group">
+        <label for="inputPassword2" class="sr-only"></label>
+        <input type="text" class="form-control" id="inputstock" placeholder="600001" name="stock">
+    </div>
+    <button type="submit" class="btn btn-default" value="submit">查看股票详情</button>
+    <button type="button" class="btn btn-default" value="submit2" onclick="javascript:alert('这是啥')">查看?</button>
+</form>
+
+<form class="form-inline" method="get" action="/qushitu/">
+    <div class="form-group">
+        <label class="sr-only">stockname</label>
+        <p class="form-control-static">股票代码：</p>
+    </div>
+    <div class="form-group">
+        <label for="inputPassword2" class="sr-only"></label>
+        <input type="text" class="form-control" id="inputstock2" placeholder="600001" name="stock2">
+    </div>
+    <button type="submit" class="btn btn-default" value="submit">趋势</button>
+</form>
+
+<form class="form-inline" method="get" action="/test/">
+    <button type="submit" class="btn btn-default" value="submit">TEST</button>
+</form>
+<form class="form-inline" method="get" action="/test2/">
+    <button type="submit" class="btn btn-default" value="submit">显示某某列表</button>
+</form>
+
+<form class="form-inline" method="get" action="/test3/">
+    <button type="submit" class="btn btn-default" value="submit" style="display:none">TEST3</button>
+</form>
+<form class="form-inline" method="get" action="/gen_mat/">
+    <button type="submit" class="btn btn-default" value="submit" style="display:none">gen_mat</button>
+</form>
+
+<form class="form-inline" method="get" action="/insdata/">
+    <button type="submit" class="btn btn-default" value="submit">从Tushare插入数据</button>
+</form>
+
+<!img-- src="static/images/001.jpg" class="img-responsive" alt="Responsive image" -->
+<image src="{% get_static_prefix %}images/001.jpg"  height="500" width="=400" style="display:none"></image>
+
+
+<form style="display: none">
+    <label for="a">a:</label><input type="number" id="a" name="a"></br>
+    <label for="b">b:</label><input type="number" id="b" name="b"></br>
+    <p>result:<span id="result">{{ result }}</span></p>
+    <button type="button" id="submit">提交</button>
+
+
+    <script src="../static/js/jquery-3.3.1.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            $("#submit").click(function () {
+                var a = $("#a").val()
+                var b = $("#b").val()
+
+                $.ajax({
+                    type:"get",
+                    data:{'a':a,'b':b},
+                    url:"/add/",
+                    dataType:"json",
+                    success:function (data) {
+                        $("#result").html(data.result)
+                    },
+                    error:function () {
+                        alert("false");
+                    }
+                })
+            })
+        })
+    </script>
+</form>
+
+
+<form>
+    <table class="table table-hover" id="listtable">
+    <thead>
+    <tr>
+        <th width="200">date</th>
+        <th>open</th>
+        <th>close</th>
+        <th>high</th>
+        <th>low</th>
+        <th width="200">volume</th>
+        <th width="200">code</th>
+    </tr>
+    </thead>
+    <tbody id="table_body">
+    </tbody>
+    </table>
+
+    <button type="button" id="submit2">提交</button>
+
+    <script src="../static/js/jquery-3.3.1.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            $("#submit2").click(function () {
+                var tbody=window.document.getElementById("table_body");
+                $.ajax({
+                    type:"get",
+                    data:{},
+                    url:"/read_stock/",
+                    dataType:"json",
+                    success:function (data) {
+                        $("#listtable").DataTable().destroy();   //再次click后，先将datatable删除
+                        var str="";
+                        $("#table_body").html("");
+                        for (i in data.result){
+                            str += "<tr>" +
+                                 "<td>" + data.result[i][0] + "</td>" +
+                                 "<td>" + data.result[i][1] + "</td>" +
+                                 "<td>" + data.result[i][2] + "</td>" +
+                                 "<td>" + data.result[i][3] + "</td>" +
+                                 "<td>" + data.result[i][4] + "</td>" +
+                                 "<td>" + data.result[i][5] + "</td>" +
+                                 "<td>" + data.result[i][6] + "</td>" +
+                                 "<tr>";
+                        }
+                        $("#table_body").append(str);
+
+                        $("#listtable").DataTable({
+                            data:data.result,    //将后端返回的json数据赋值给datatable
+                        });
+                    },
+                    error:function () {
+                        alert("false");
+                    }
+                })
+            })
+        })
+    </script>
+
+</form>
+
+
+{% endblock %}
